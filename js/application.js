@@ -1,21 +1,13 @@
 (function () {
 	var paths = {
+		home: '_home.html',
 		about: '_about.html',
 		portfolio: '_portfolio.html',
 		blog: '_blog.html',
 		contact: '_contact.html'
 	}
 
-	current_path = 'home';
-
-	function goToHome() {
-		log("Inside goToHome");
-		var content = $('div#main div#content');
-
-		content.find('div#content_inner').fadeOut(200, function () {
-
-		});
-	}
+	current_path = '';
 
 	function goToPath(path) {
 		log("Inside goToPath for path '" + path + "'");
@@ -28,11 +20,8 @@
 				'height': content.height()
 			})
 			content.find('div#content_inner').fadeOut(200, function () {
-				content.animate({
-					width: $(document).width() - 120 + 'px',
-					height: $(document).height() - 350 + 'px'
-				}, 1000, function () {
-					
+				$.get(paths[path], function (data) {
+					content.find('div#content_inner').html(data).fadeIn(200);
 				});
 			});
 
@@ -41,29 +30,34 @@
 	}
 
 	$(document).ready(function() {
+		$('div#main div#content').animate({
+			width: $(document).width() - 120 + 'px',
+			height: $(document).height() - 350 + 'px'
+		}, 1000, function () {
+			goToPath('home');
+		});
+
 		$(document).on('click', '.button', function () {
 			var path = $(this).data('path');
-			if (path == 'home') {
-				goToHome();
-			}
-			else {
-				goToPath(path);
-			}
+			goToPath(path);
 		});
 
 		$(window).on('resize', function () {
-			var content = $('div#main div#content');
+			var header = $('div#header');
+			var footer = $('div#footer');
+			var main = $('div#main');
+			var content = main.find('div#content');
 
-			if (current_path == 'home') {
+			main.css({
+				'top': header.height(),
+				'height': $(document).height() - header.height() - footer.height()
+			});
 
-			}
-			else {
-				content.css({
-					width: $(document).width() - 120 + 'px',
-					height: $(document).height() - 350 + 'px'
-				})
-			}
-		});
+			content.css({
+				'width': $(document).width() - 120 + 'px',
+				'min-height': main.height() - 120 + 'px'
+			});
+		}).trigger('resize');
 	});
 })();
 
