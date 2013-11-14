@@ -2,8 +2,7 @@
 	var paths = {
 		home: '_home.html',
 		about: '_about.html',
-		portfolio: '_portfolio.html',
-		blog: '_blog.html',
+		resume: '_resume.html',
 		contact: '_contact.html'
 	}
 
@@ -15,13 +14,15 @@
 		if (paths[path] && current_path != path) {
 			var content = $('div#main div#content');
 
-			content.css({
-				'width': content.width(),
-				'height': content.height()
-			})
+			// content.css({
+			// 	'width': content.width(),
+			// 	'height': content.height()
+			// })
 			content.find('div#content_inner').fadeOut(200, function () {
 				$.get(paths[path], function (data) {
-					content.find('div#content_inner').html(data).fadeIn(200);
+					content.find('div#content_inner').html(data).fadeIn(200, function () {
+						$(document).trigger('resize');
+					});
 				});
 			});
 
@@ -50,13 +51,23 @@
 
 			main.css({
 				'top': header.height(),
-				'height': $(document).height() - header.height() - footer.height()
+				'height': $(window).height() - header.height() - footer.height()
 			});
 
 			content.css({
-				'width': $(document).width() - 120 + 'px',
-				'min-height': main.height() - 120 + 'px'
+				'width': $(window).width() - 120 + 'px',
+				'min-height': main.height() - 120 + 'px',
+				'height': 'auto'
 			});
+
+			if (content.height() > main.height() - 120) {
+				main.css('height', content.height() + 170);
+				console.log("Ok good.");
+			} else {
+				console.log("FUUUCK!");
+				console.log("CONTENT: " + content.height());
+				console.log("MAIN: " + main.height());
+			}
 		}).trigger('resize');
 	});
 })();
