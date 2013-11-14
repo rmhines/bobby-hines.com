@@ -64,7 +64,7 @@
 				main.css('height', content.height() + 170);
 				console.log("Ok good.");
 			} else {
-				console.log("FUUUCK!");
+				console.log("DAAAARN!");
 				console.log("CONTENT: " + content.height());
 				console.log("MAIN: " + main.height());
 			}
